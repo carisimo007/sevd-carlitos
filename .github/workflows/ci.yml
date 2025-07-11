@@ -1,24 +1,41 @@
-name: CI SEVD
+name: CI/CD Pipeline con Docker
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  test:
+  build-test-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Clonar repo
-      uses: actions/checkout@v3
+      - name: 🧾 Clonar repositorio
+        uses: actions/checkout@v3
 
-    - name: Instalar PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.1'
+      - name: 🐘 Instalar PHP y Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          extensions: mbstring, xml
+          coverage: none
 
-    - name: Instalar dependencias
-      run: composer install
+      - name: 📦 Instalar dependencias con Composer
+        run: composer install
 
-    - name: Ejecutar PHPUnit
-      run: vendor/bin/phpunit
+      - name: ✅ Ejecutar tests con PHPUnit
+        run: vendor/bin/phpunit --testdox
+
+      - name: 🐳 Construir imagen Docker
+        run: docker build -t sevd-app:test .
+
+      - name: 🚀 Ejecutar contenedor Docker (entorno de prueba)
+        run: |
+          docker stop sevd-app || true
+          docker rm sevd-app || true
+          docker run -d -p 8080:80 --name sevd-app sevd-app:test
+
+      - name: 🔍 Verificar app funcionando en entorno
+        run: |
+          sleep 3
+          curl -f http://localhost:8080 || exit 1
