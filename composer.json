@@ -1,4 +1,13 @@
 {
+    "name": "sevd/ci",
+    "description": "TP Sistemas II CI/CD",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "carisimo007",
+            "email": "carlosorlandocarisimo@gmail.com"
+        }
+    ],
     "require-dev": {
         "phpunit/phpunit": "^11.5"
     }
