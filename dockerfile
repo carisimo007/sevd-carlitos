@@ -1,11 +1,10 @@
-# Usa la imagen oficial de PHP con Apache
+# Usa PHP con Apache
 FROM php:8.1-apache
 
-# Copia el código fuente al contenedor
-COPY src/ /var/www/html/
+# Copia TODO el proyecto (menos lo que esté en .dockerignore)
+COPY . /var/www/html/
 
-# Instala extensiones necesarias (si usás base de datos, agregá pdo_mysql por ejemplo)
+# Instalá extensiones PHP necesarias
 RUN docker-php-ext-install pdo pdo_mysql
 
-# Expone el puerto 80 del contenedor
 EXPOSE 80
